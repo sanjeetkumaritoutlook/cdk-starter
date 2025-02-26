@@ -26,13 +26,23 @@ export class CdkStarterStack extends cdk.Stack {
         }]
       }
     });
-
+   
+ const duration = new cdk.CfnParameter(this, 'duration', {
+    default: 6,
+    minValue: 1,
+    maxValue: 10,
+    type: 'Number',
+  });
     //L2
-    new Bucket(this, 'MyL2Bucket', {
+   const myL2Bucket= new Bucket(this, 'MyL2Bucket', {
      lifecycleRules: [{
-    expiration: cdk.Duration.days(2),
+    expiration: cdk.Duration.days(duration.valueAsNumber),
   }]
   });
+
+  new cdk.CfnOutput(this, 'MyL2BucketName', {
+    value: myL2Bucket.bucketName
+  })
 
   //L3  like LambdaRestApi
   new L3Bucket(this, 'MyL3Bucket', 3);
