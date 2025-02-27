@@ -4,13 +4,18 @@ import { Bucket, CfnBucket } from 'aws-cdk-lib/aws-s3';
 import { Fn } from 'aws-cdk-lib';
 
 export class PhotosStack extends cdk.Stack {
-    private stackSuffix:string;
+  private stackSuffix:string;
   constructor(scope: Construct, id: string, props?: cdk.StackProps) {
     super(scope, id, props);
     this.initializeSuffix();
-     new Bucket(this, 'PhotosBucket2',{
+    const photosBucket= new Bucket(this, 'PhotosBucket2',{
          bucketName: `photos-bucket-${this.stackSuffix}`,
     });
+
+    new cdk.CfnOutput(this, 'photos-bucket', {
+      value: photosBucket.bucketArn,
+      exportName: 'photos-bucket'
+  })
     //if PhotosBucket2 as construct name/Logical ID
     //create new resource, and delete old one
    
