@@ -4,12 +4,16 @@ import { Bucket, CfnBucket } from 'aws-cdk-lib/aws-s3';
 import { Fn } from 'aws-cdk-lib';
 import { Function as LambdaFunction,Runtime,Code } from 'aws-cdk-lib/aws-lambda';
 
+interface PhotosHandlerStackProps extends cdk.StackProps {
+    targetBucketArn: string
+  }
+
 export class PhotosHandlerStack extends cdk.Stack {
 
-  constructor(scope: Construct, id: string, props?: cdk.StackProps) {
+  constructor(scope: Construct, id: string, props: PhotosHandlerStackProps) {
     super(scope, id, props);
    
-    const targetBucket = Fn.importValue('photos-bucket');
+    //const targetBucket = Fn.importValue('photos-bucket');
     //very basic lambda function
     new LambdaFunction(this, 'PhotosHandler', {
         runtime: Runtime.NODEJS_16_X,
@@ -20,7 +24,7 @@ export class PhotosHandlerStack extends cdk.Stack {
         };
       `),
         environment: {
-            TARGET_BUCKET: targetBucket,
+            TARGET_BUCKET: props.targetBucketArn,
         },
 
     });
